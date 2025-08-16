@@ -1,15 +1,205 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+// Prisma schema for Mhargick Fashion Store
+// Optimized for Nigerian e-commerce with Naira pricing
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+// User model with Nigerian-specific fields
+model User {
+  id          String    @id @default(uuid())
+  name        String?
+  email       String?   @unique
+  password    String?   // Hashed for credentials auth
+  phone       String?   @unique // Nigerian phone numbers
+  address     String?
+  city        String?   @default("Lagos")
+  state       String?   @default("Lagos")
+  isAdmin     Boolean   @default(false)
+  isVerified  Boolean   @default(false)
+  
+  // Relations
+  orders      Order[]
+  cartItems   CartItem[]
+  reviews     Review[]
+  
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  
+  @@map("users")
+}
+
+// Product categories
+model Category {
+  id          String    @id @default(uuid())
+  name        String    @unique
+  description String?
+  imageUrl    String?
+  slug        String    @unique
+  isActive    Boolean   @default(true)
+  
+  // Relations
+  products    Product[]
+  
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  
+  @@map("categories")
+}
+
+// Products with Nigerian pricing
+model Product {
+  id          String     @id @default(uuid())
+  name        String
+  description String
+  price       Decimal    @db.Decimal(10, 2) // Naira pricing (e.g., 25000.00)
+  salePrice   Decimal?   @db.Decimal(10, 2) // Discounted price
+  imageUrl    String
+  images      String[]   // Additional product images
+  sizes       String[]   // Available sizes ["S", "M", "L", "XL"]
+  colors      String[]   // Available colors ["Red", "Blue"]
+  stock       Int        @default(0)
+  sku         String?    @unique // Stock Keeping Unit
+  weight      Decimal?   @db.Decimal(5, 2) // For shipping calculations (kg)
+  
+  // SEO & Organization
+  slug        String     @unique
+  tags        String[]   // For search and filtering
+  isFeatured  Boolean    @default(false)
+  isActive    Boolean    @default(true)
+  
+  // Category relation
+  categoryId  String
+  category    Category   @relation(fields: [categoryId], references: [id])
+  
+  // Relations
+  cartItems   CartItem[]
+  orderItems  OrderItem[]
+  reviews     Review[]
+  
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  
+  @@map("products")
+}
+
+// Shopping cart
+model CartItem {
+  id        String   @id @default(uuid())
+  userId    String
+  productId String
+  quantity  Int      @default(1)
+  size      String?  // Selected size
+  color     String?  // Selected color
+  
+  // Relations
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Prevent duplicate cart items for same product/size/color
+  @@unique([userId, productId, size, color])
+  @@map("cart_items")
+}
+
+// Orders with Nigerian delivery options
+model Order {
+  id             String        @id @default(uuid())
+  orderNumber    String        @unique // Human-readable order number
+  userId         String
+  
+  // Pricing (in Naira)
+  subtotal       Decimal       @db.Decimal(10, 2)
+  shippingCost   Decimal       @db.Decimal(10, 2) @default(0)
+  discount       Decimal       @db.Decimal(10, 2) @default(0)
+  total          Decimal       @db.Decimal(10, 2)
+  
+  // Delivery Information
+  shippingAddress String
+  shippingCity    String
+  shippingState   String
+  shippingPhone   String
+  
+  // Order Status
+  status         OrderStatus   @default(PENDING)
+  paymentStatus  PaymentStatus @default(PENDING)
+  paymentMethod  String?       // "paystack", "transfer", "pos"
+  paymentRef     String?       // Paystack reference
+  
+  // Delivery tracking
+  estimatedDelivery DateTime?
+  deliveredAt       DateTime?
+  trackingNumber    String?
+  
+  // Relations
+  user           User          @relation(fields: [userId], references: [id])
+  items          OrderItem[]
+  
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  
+  @@map("orders")
+}
+
+// Individual order items
+model OrderItem {
+  id        String  @id @default(uuid())
+  orderId   String
+  productId String
+  quantity  Int
+  price     Decimal @db.Decimal(10, 2) // Price snapshot at order time
+  size      String?
+  color     String?
+  
+  // Relations
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product   Product @relation(fields: [productId], references: [id])
+  
+  @@map("order_items")
+}
+
+// Product reviews
+model Review {
+  id        String   @id @default(uuid())
+  userId    String
+  productId String
+  rating    Int      // 1-5 stars
+  comment   String?
+  isVerified Boolean @default(false) // Verified purchase
+  
+  // Relations
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // One review per user per product
+  @@unique([userId, productId])
+  @@map("reviews")
+}
+
+// Enums
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+  RETURNED
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
 }

@@ -34,3 +34,60 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+
+mhargick-fashion-store/
+├── prisma/
+│   ├── schema.prisma          # Database schema
+│   └── seed.ts                # Optional seeder script
+├── public/
+│   ├── images/                # Static images for products (e.g., shirt.jpg)
+│   └── favicon.ico            # Favicon
+├── src/
+│   ├── app/
+│   │   ├── api/
+│   │   │   ├── auth/
+│   │   │   │   └── [...nextauth]/
+│   │   │   │       └── route.ts  # NextAuth handler
+│   │   │   ├── products/
+│   │   │   │   └── route.ts   # Products API (GET/POST)
+│   │   │   ├── categories/
+│   │   │   │   └── route.ts   # Categories API
+│   │   │   ├── cart/
+│   │   │   │   └── route.ts   # Cart API (protected)
+│   │   │   ├── orders/
+│   │   │   │   └── route.ts   # Orders API
+│   │   │   └── paystack/
+│   │   │       └── route.ts   # Paystack webhook for verification
+│   │   ├── auth/
+│   │   │   └── signin/
+│   │   │       └── page.tsx   # Login page
+│   │   ├── cart/
+│   │   │   └── page.tsx       # Cart page with checkout
+│   │   ├── orders/
+│   │   │   └── page.tsx       # User orders page
+│   │   ├── products/
+│   │   │   └── [id]/
+│   │   │       └── page.tsx   # Product detail page
+│   │   ├── globals.css        # Global styles (Tailwind)
+│   │   ├── layout.tsx         # Root layout with providers
+│   │   ├── page.tsx           # Home page
+│   │   └── favicon.ico        # (optional)
+│   ├── components/
+│   │   ├── Header.tsx         # Navbar with search, cart icon
+│   │   ├── Footer.tsx         # Footer
+│   │   ├── ProductCard.tsx    # Reusable product card
+│   │   ├── CartItem.tsx       # Cart item component
+│   │   ├── QueryProvider.tsx  # React Query wrapper
+│   │   └── SkeletonLoader.tsx # Loading skeleton
+│   └── lib/
+│       └── prisma.ts          # Prisma client export
+├── .env                       # Environment variables
+├── .env.example               # Example env
+├── .eslintrc.json             # ESLint config
+├── next.config.js             # Next.js config
+├── package.json               # Dependencies
+├── postcss.config.js          # PostCSS for Tailwind
+├── tailwind.config.ts         # Tailwind config
+├── tsconfig.json              # TypeScript config
+└── yarn.lock / package-lock.json  # Lockfile
