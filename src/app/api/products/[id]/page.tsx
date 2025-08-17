@@ -34,7 +34,6 @@ export default function ProductDetail() {
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col md:flex-row gap-8">
-      <img src={product.imageUrl} alt={product.name} className="w-full md:w-1/2 h-96 object-cover rounded" />
       <div className="flex-1">
         <h1 className="text-3xl font-bold">{product.name}</h1>
         <p className="text-2xl mt-2">₦{product.price.toLocaleString()}</p>

@@ -22,11 +22,6 @@ interface CartItemProps {
 export default function CartItem({ item, onRemove, onUpdateQuantity, isUpdating, isRemoving }: CartItemProps) {
   return (
     <div className="flex items-center border-b py-4">
-      <img
-        src={item.product.imageUrl}
-        alt={item.product.name}
-        className="w-24 h-24 object-cover rounded-md"
-      />
       <div className="ml-4 flex-1">
         <h3 className="text-lg font-semibold">{item.product.name}</h3>
         <p className="text-gray-600">₦{item.product.price.toLocaleString()} x {item.quantity}</p>

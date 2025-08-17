@@ -27,12 +27,7 @@ export default function ProductCard({ product }: ProductCardProps) {
       transition={{ duration: 0.3 }}
       className="bg-gray-800 p-4 rounded-xl shadow-lg overflow-hidden"
     >
-      <img
-        src={product.imageUrl}
-        alt={product.name}
-        className="w-full h-56 object-cover rounded-md mb-4"
-        loading="lazy"
-      />
+     
       <h2 className="text-xl font-semibold text-white mb-2">{product.name}</h2>
       <div className="flex items-center gap-2 mb-3">
         {salePrice ? (

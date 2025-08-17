@@ -1,6 +1,5 @@
 'use client';
 
-import type { Metadata } from 'next';
 import { SessionProvider } from 'next-auth/react';
 import { QueryProvider } from '@/components/QueryProvider';
 import Header from '@/components/Header';
