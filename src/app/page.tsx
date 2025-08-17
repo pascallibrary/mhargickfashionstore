@@ -66,27 +66,7 @@ export default function Home() {
       animate="visible"
       className="min-h-screen bg-gray-900 text-white"
     >
-      {/* Hero Section */}
-      <motion.section
-        variants={itemVariants}
-        className="relative text-center py-24 bg-gradient-to-r from-gray-900 to-purple-900"
-      >
-        <div className="absolute inset-0 bg-black/50"></div>
-        <div className="relative container mx-auto px-4">
-          <h1 className="text-5xl md:text-6xl font-bold mb-4 tracking-tight text-white">
-            Mhargick Fashion
-          </h1>
-          <p className="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto mb-8">
-            Authentic African vibes meet bold, modern style. Rock the culture.
-          </p>
-          <Link
-            href="/products"
-            className="inline-block bg-pink-500 text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-pink-600 transition-colors duration-300"
-          >
-            Shop the Vibe
-          </Link>
-        </div>
-      </motion.section>
+    
 
       {/* Featured Products Section */}
       <motion.section variants={itemVariants} className="container mx-auto px-4 py-12">
@@ -169,7 +149,7 @@ export default function Home() {
             aria-label="Email for newsletter"
           />
           <motion.button
-            whileHover={{ scale: 1.05, boxShadow: '0 0 15px rgba(236, 72, 153, 0.5)' }}
+            whileHover={{ scale: 1.05, boxShadow: '0 0 15px rgba(233, 236, 72, 0.5)' }}
             whileTap={{ scale: 0.95 }}
             className="bg-green-400 text-gray-900 px-6 py-3 rounded-full font-semibold hover:bg-green-500 transition-colors duration-300"
           >
