@@ -7,7 +7,7 @@ import { prisma } from '@/lib/prisma';
 declare module 'next-auth' {
   interface User {
     id: string;
-    email: string;
+    email: string;  // Make email required (not nullable)
     name?: string | null;
     isAdmin: boolean;
   }
@@ -15,7 +15,7 @@ declare module 'next-auth' {
   interface Session {
     user: {
       id: string;
-      email: string;
+      email: string;  // Make email required (not nullable)
       name?: string | null;
       isAdmin: boolean;
     }
@@ -51,6 +51,12 @@ export const authOptions: NextAuthOptions = {
             return null;
           }
 
+          // Additional check: ensure email exists (though it should based on schema)
+          if (!user.email) {
+            console.error('User found but email is null/undefined');
+            return null;
+          }
+
           const isValidPassword = await bcrypt.compare(credentials.password, user.password);
 
           if (!isValidPassword) {
@@ -59,7 +65,7 @@ export const authOptions: NextAuthOptions = {
 
           return {
             id: user.id,
-            email: user.email,
+            email: user.email, // This is now guaranteed to be a string
             name: user.name,
             isAdmin: user.isAdmin,
           };
@@ -90,8 +96,6 @@ export const authOptions: NextAuthOptions = {
   },
   pages: {
     signIn: '/auth/signin',
-    // Remove signUp from pages config as it's not a valid NextAuth page
-    // signUp: '/auth/signup', 
   },
   session: {
     strategy: 'jwt',
