@@ -18,39 +18,40 @@ const authOptions: NextAuthOptions = {
           if (!credentials?.email || !credentials?.password) {
             return null;
           }
-
+           
           const user = await prisma.user.findUnique({
             where: {
               email: credentials.email.toLowerCase()
             }
           });
-
+           
           if (!user || !user.password) {
             return null;
           }
-
+           
           const isValidPassword = await bcrypt.compare(
             credentials.password,
             user.password
           );
-
+           
           if (!isValidPassword) {
             return null;
           }
-
+           
           // Ensure email is not null before returning
           if (!user.email) {
             return null;
           }
-
+           
           return {
             id: user.id,
             name: user.name,
             email: user.email, // Now guaranteed to be string, not null
             isAdmin: Boolean(user.isAdmin),
           };
-        } catch (error) {
-          console.error('Authorization error:', error);
+        } catch (_error) {
+          // Prefixed with underscore to indicate intentionally unused
+          console.error('Authorization error:', _error);
           return null;
         }
       },

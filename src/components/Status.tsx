@@ -7,7 +7,6 @@ import {
   PaymentStatus, 
   getOrderStatusConfig, 
   getPaymentStatusConfig,
-  canTransitionOrderStatus,
   getNextOrderStatuses,
   getCustomerStatusMessage,
   isOrderCancellable
@@ -243,7 +242,6 @@ export const CustomerStatusMessage: React.FC<CustomerStatusMessageProps> = ({
 }) => {
   const message = getCustomerStatusMessage(orderStatus, paymentStatus);
   const orderConfig = getOrderStatusConfig(orderStatus);
-  const paymentConfig = getPaymentStatusConfig(paymentStatus);
 
   const getMessageColor = () => {
     if (paymentStatus === PaymentStatus.FAILED || orderStatus === OrderStatus.CANCELLED) {
@@ -289,7 +287,6 @@ export const CustomerStatusMessage: React.FC<CustomerStatusMessageProps> = ({
 // Order Actions Component
 interface OrderActionsProps {
   orderStatus: OrderStatus;
-  paymentStatus: PaymentStatus;
   onCancel?: () => Promise<void>;
   onReorder?: () => void;
   onTrackOrder?: () => void;
@@ -298,7 +295,6 @@ interface OrderActionsProps {
 
 export const OrderActions: React.FC<OrderActionsProps> = ({
   orderStatus,
-  paymentStatus,
   onCancel,
   onReorder,
   onTrackOrder,
