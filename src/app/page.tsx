@@ -4,8 +4,9 @@ import { useQuery } from '@tanstack/react-query';
 import ProductCard from '@/components/ProductCard';
 import { motion } from 'framer-motion';
 import SkeletonLoader, { ProductGridSkeleton } from '@/components/SkeletonLoader';
+import Link from 'next/link';
 
-// Type for the product (adjust based on your actual product structure)
+// Type for the product (aligned with Prisma schema)
 interface Product {
   id: string;
   name: string;
@@ -18,11 +19,11 @@ interface Product {
 }
 
 export default function Home() {
-  const { 
-    data: products, 
-    isLoading, 
+  const {
+    data: products,
+    isLoading,
     error,
-    isError 
+    isError,
   } = useQuery<Product[]>({
     queryKey: ['products'],
     queryFn: async () => {
@@ -43,9 +44,9 @@ export default function Home() {
       opacity: 1,
       transition: {
         duration: 0.5,
-        staggerChildren: 0.1
-      }
-    }
+        staggerChildren: 0.1,
+      },
+    },
   };
 
   const itemVariants = {
@@ -53,81 +54,90 @@ export default function Home() {
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.3 }
-    }
+      transition: { duration: 0.3 },
+    },
   };
 
   if (isError) {
     return (
-      <motion.div 
-        initial={{ opacity: 0 }} 
-        animate={{ opacity: 1 }} 
-        className="text-center py-12"
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="text-center py-12 bg-gray-900 text-white"
       >
         <div className="max-w-md mx-auto">
-          <div className="text-red-500 text-6xl mb-4">⚠️</div>
-          <h2 className="text-2xl font-bold text-gray-800 mb-2">
+          <div className="text-pink-500 text-6xl mb-4">⚠️</div>
+          <h2 className="text-2xl font-bold text-white mb-2">
             Oops! Something went wrong
           </h2>
-          <p className="text-gray-600 mb-6">
+          <p className="text-gray-400 mb-6">
             {error instanceof Error ? error.message : 'Failed to load products'}
           </p>
-          <button 
+          <motion.button
+            whileHover={{ scale: 1.05, backgroundColor: '#ec4899' }}
+            whileTap={{ scale: 0.95 }}
             onClick={() => window.location.reload()}
-            className="bg-indigo-500 hover:bg-indigo-600 text-white px-6 py-3 rounded-lg transition-colors"
+            className="bg-pink-500 text-white px-6 py-3 rounded-full font-semibold transition-colors duration-300"
           >
             Try Again
-          </button>
+          </motion.button>
         </div>
       </motion.div>
     );
   }
 
   return (
-    <motion.div 
+    <motion.div
       variants={containerVariants}
       initial="hidden"
       animate="visible"
-      className="min-h-screen"
+      className="min-h-screen bg-gray-900 text-white"
     >
       {/* Hero Section */}
-      <motion.section 
+      <motion.section
         variants={itemVariants}
-        className="text-center py-12 bg-gradient-to-r from-indigo-500 to-purple-600 text-white mb-12 rounded-lg"
+        className="relative text-center py-24 bg-gradient-to-r from-gray-900 to-purple-900"
       >
-        <h1 className="text-5xl font-bold mb-4">
-          Welcome to Mhargick Fashion
-        </h1>
-        <p className="text-xl opacity-90 max-w-2xl mx-auto">
-          Discover authentic African fashion with modern style. 
-          From traditional Agbadas to contemporary designs.
-        </p>
+        <div className="absolute inset-0 bg-black/50"></div>
+        <div className="relative container mx-auto px-4">
+          <h1 className="text-5xl md:text-6xl font-bold mb-4 tracking-tight text-white">
+            Mhargick Fashion
+          </h1>
+          <p className="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto mb-8">
+            Authentic African vibes meet bold, modern style. Rock the culture.
+          </p>
+          <Link
+            href="/products"
+            className="inline-block bg-pink-500 text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-pink-600 transition-colors duration-300"
+          >
+            Shop the Vibe
+          </Link>
+        </div>
       </motion.section>
 
       {/* Featured Products Section */}
-      <motion.section variants={itemVariants}>
+      <motion.section variants={itemVariants} className="container mx-auto px-4 py-12">
         <div className="flex items-center justify-between mb-8">
-          <h2 className="text-3xl font-bold text-gray-800">
-            Featured Products
+          <h2 className="text-3xl md:text-4xl font-bold text-white">
+            Hot Picks
           </h2>
-          <motion.a
+          <Link
             href="/products"
-            className="text-indigo-500 hover:text-indigo-600 font-semibold"
-            whileHover={{ scale: 1.05 }}
+            className="text-green-400 hover:text-green-500 font-semibold text-lg transition-colors duration-300 no-underline"
           >
-            View All →
-          </motion.a>
+            See All
+          </Link>
         </div>
 
         {isLoading ? (
           <ProductGridSkeleton count={6} />
         ) : products && products.length > 0 ? (
-          <motion.div 
+          <motion.div
             variants={containerVariants}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
           >
             {products
-              .filter(product => product.isFeatured)
+              .filter((product) => product.isFeatured)
               .slice(0, 6)
               .map((product) => (
                 <motion.div key={product.id} variants={itemVariants}>
@@ -136,16 +146,13 @@ export default function Home() {
               ))}
           </motion.div>
         ) : (
-          <motion.div 
-            variants={itemVariants}
-            className="text-center py-12"
-          >
+          <motion.div variants={itemVariants} className="text-center py-12">
             <div className="text-gray-400 text-6xl mb-4">📦</div>
-            <h3 className="text-2xl font-semibold text-gray-700 mb-2">
-              No Products Available
+            <h3 className="text-2xl font-semibold text-white mb-2">
+              No Drops Yet
             </h3>
-            <p className="text-gray-500">
-              We're working on adding amazing products. Check back soon!
+            <p className="text-gray-400">
+              New styles coming soon. Stay tuned!
             </p>
           </motion.div>
         )}
@@ -153,13 +160,13 @@ export default function Home() {
 
       {/* All Products Section */}
       {!isLoading && products && products.length > 0 && (
-        <motion.section variants={itemVariants} className="mt-16">
-          <h2 className="text-3xl font-bold text-gray-800 mb-8">
-            All Products
+        <motion.section variants={itemVariants} className="container mx-auto px-4 py-12">
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-8">
+            Full Collection
           </h2>
-          <motion.div 
+          <motion.div
             variants={containerVariants}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
           >
             {products.map((product) => (
               <motion.div key={product.id} variants={itemVariants}>
@@ -171,28 +178,29 @@ export default function Home() {
       )}
 
       {/* Newsletter Section */}
-      <motion.section 
+      <motion.section
         variants={itemVariants}
-        className="mt-16 bg-gray-50 rounded-lg p-8 text-center"
+        className="container mx-auto px-4 py-12 bg-gray-800 rounded-2xl text-center"
       >
-        <h3 className="text-2xl font-bold text-gray-800 mb-4">
-          Stay Updated
+        <h3 className="text-2xl md:text-3xl font-bold text-white mb-4">
+          Join the Crew
         </h3>
-        <p className="text-gray-600 mb-6">
-          Get notified about new arrivals and exclusive offers
+        <p className="text-gray-300 mb-6 max-w-xl mx-auto">
+          Get first dibs on new drops and exclusive deals.
         </p>
-        <div className="flex max-w-md mx-auto gap-4">
+        <div className="flex max-w-sm mx-auto gap-3">
           <input
             type="email"
-            placeholder="Enter your email"
-            className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            placeholder="Your email"
+            className="w-2/3 px-4 py-3 bg-gray-700 border border-gray-600 rounded-full text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-pink-500 transition-all duration-300"
+            aria-label="Email for newsletter"
           />
           <motion.button
-            whileHover={{ scale: 1.05 }}
+            whileHover={{ scale: 1.05, boxShadow: '0 0 15px rgba(236, 72, 153, 0.5)' }}
             whileTap={{ scale: 0.95 }}
-            className="bg-indigo-500 hover:bg-indigo-600 text-white px-6 py-2 rounded-lg transition-colors"
+            className="bg-green-400 text-gray-900 px-6 py-3 rounded-full font-semibold hover:bg-green-500 transition-colors duration-300"
           >
-            Subscribe
+            Join
           </motion.button>
         </div>
       </motion.section>

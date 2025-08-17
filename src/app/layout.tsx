@@ -8,6 +8,7 @@ import Footer from '@/components/Footer';
 import './globals.css';
 
 
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -19,7 +20,7 @@ export default function RootLayout({
         <SessionProvider>
           <QueryProvider>
             <Header />
-            <main className="container mx-auto py-8">{children}</main>
+            <main className="container mx-auto px-4">{children}</main>
             <Footer />
           </QueryProvider>
         </SessionProvider>
