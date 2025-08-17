@@ -57,34 +57,7 @@ export default function Home() {
       transition: { duration: 0.3 },
     },
   };
-
-  if (isError) {
-    return (
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        className="text-center py-12 bg-gray-900 text-white"
-      >
-        <div className="max-w-md mx-auto">
-          <div className="text-pink-500 text-6xl mb-4">⚠️</div>
-          <h2 className="text-2xl font-bold text-white mb-2">
-            Oops! Something went wrong
-          </h2>
-          <p className="text-gray-400 mb-6">
-            {error instanceof Error ? error.message : 'Failed to load products'}
-          </p>
-          <motion.button
-            whileHover={{ scale: 1.05, backgroundColor: '#ec4899' }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => window.location.reload()}
-            className="bg-pink-500 text-white px-6 py-3 rounded-full font-semibold transition-colors duration-300"
-          >
-            Try Again
-          </motion.button>
-        </div>
-      </motion.div>
-    );
-  }
+  
 
   return (
     <motion.div
