@@ -145,7 +145,7 @@ export default function Home() {
           <input
             type="email"
             placeholder="Your email"
-            className="w-2/3 px-4 py-3 bg-gray-700 border border-gray-600 rounded-full text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-pink-500 transition-all duration-300"
+            className="w-2/3 px-4 py-3 bg-gray-700 border border-gray-600 rounded-full text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 transition-all duration-300"
             aria-label="Email for newsletter"
           />
           <motion.button
