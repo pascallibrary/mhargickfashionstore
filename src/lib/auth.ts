@@ -1,8 +1,16 @@
-// lib/auth.ts or auth.config.ts
-import { NextAuthOptions } from 'next-auth';
+// lib/auth.ts
+import { NextAuthOptions, User } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { prisma } from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
+
+// Define the user type explicitly
+interface AuthUser extends User {
+  id: string;
+  email: string;
+  name?: string | null;
+  isAdmin: boolean;
+}
 
 // Extend NextAuth types
 declare module 'next-auth' {
@@ -38,7 +46,7 @@ export const authOptions: NextAuthOptions = {
         email: { label: 'Email', type: 'email' },
         password: { label: 'Password', type: 'password' },
       },
-      async authorize(credentials) {
+      async authorize(credentials): Promise<AuthUser | null> {
         try {
           if (!credentials?.email || !credentials?.password) {
             return null;
@@ -63,12 +71,13 @@ export const authOptions: NextAuthOptions = {
             return null;
           }
 
+          // Explicitly type the return object
           return {
             id: user.id,
             name: user.name,
-            email: user.email,
+            email: user.email as string, // Type assertion
             isAdmin: Boolean(user.isAdmin),
-          };
+          } as AuthUser;
         } catch (error) {
           console.error('Authorization error:', error);
           return null;
@@ -85,14 +94,14 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
-        token.isAdmin = Boolean(user.isAdmin);
+        token.isAdmin = user.isAdmin;
       }
       return token;
     },
     async session({ session, token }) {
       if (token && session.user) {
         session.user.id = token.id;
-        session.user.isAdmin = Boolean(token.isAdmin);
+        session.user.isAdmin = token.isAdmin;
       }
       return session;
     },
